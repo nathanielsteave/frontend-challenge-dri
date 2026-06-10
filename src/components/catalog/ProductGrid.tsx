@@ -53,12 +53,12 @@ export default function ProductGrid() {
 
     // price range
     if (priceRange !== 'all') {
-      if (priceRange === '500000+') {
-        filtered = filtered.filter((p) => (p.price * 1000) >= 500000);
+      if (priceRange === '10000000+') {
+        filtered = filtered.filter((p) => Math.round(p.price * 17900) >= 10000000);
       } else {
         const [min, max] = priceRange.split('-').map(Number);
         filtered = filtered.filter((p) => {
-          const idrPrice = p.price * 1000;
+          const idrPrice = Math.round(p.price * 17900);
           return idrPrice >= min && idrPrice <= max;
         });
       }
@@ -105,12 +105,12 @@ export default function ProductGrid() {
               selected={selectedCategory}
               onSelect={(cat) => {
                 setSelectedCategory(cat);
-                setVisibleCount(9); // Reset pagination on category change
+                setVisibleCount(9);
               }}
               priceRange={priceRange}
               onPriceRangeChange={(range) => {
                 setPriceRange(range);
-                setVisibleCount(9); // Reset pagination on price change
+                setVisibleCount(9);
               }}
             />
           </aside>

@@ -74,7 +74,7 @@ export default function ProductDetail({ productId }: ProductDetailProps) {
     setOpenSection(openSection === section ? null : section);
   };
 
-  // harga "asli" sebelum diskon (fake markup ~15%)
+  // harga asli sebelum diskon (fake markup ~15%)
   const originalPrice = product ? Math.round(product.price * 1.15 * 100) / 100 : 0;
 
   if (isLoading) {

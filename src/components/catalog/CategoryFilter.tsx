@@ -9,11 +9,11 @@ interface CategoryFilterProps {
 
 const PRICE_RANGES = [
   { label: 'All Prices', value: 'all' },
-  { label: 'Rp0 - Rp50.000', value: '0-50000' },
-  { label: 'Rp50.000 - Rp100.000', value: '50000-100000' },
-  { label: 'Rp100.000 - Rp250.000', value: '100000-250000' },
-  { label: 'Rp250.000 - Rp500.000', value: '250000-500000' },
-  { label: 'Rp500.000 +', value: '500000+' },
+  { label: 'Rp0 - Rp500.000', value: '0-500000' },
+  { label: 'Rp500.000 - Rp1.000.000', value: '500000-1000000' },
+  { label: 'Rp1.000.000 - Rp5.000.000', value: '1000000-5000000' },
+  { label: 'Rp5.000.000 - Rp10.000.000', value: '5000000-10000000' },
+  { label: 'Rp10.000.000 +', value: '10000000+' },
 ];
 
 const CATEGORIES = [
