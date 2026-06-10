@@ -1,6 +1,6 @@
 # Tjermin – Shopping Catalog App
 
-Aplikasi katalog belanja yang dibangun pakai **Next.js 16** (App Router), **Redux Toolkit**, **TanStack Query**, dan **Tailwind CSS v4**. Data produk diambil dari [Fake Store API](https://fakestoreapi.com/). Fitur utamanya: persistent cart, animasi micro-interaction, dan layout responsive.
+Aplikasi katalog belanja berbasis **Next.js 16** (App Router) dengan **Redux Toolkit**, **TanStack Query**, dan **Tailwind CSS v4**. Data produk bersumber dari [Fake Store API](https://fakestoreapi.com/). Fitur utama meliputi persistent cart, micro-interaction, dan responsive design.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
@@ -11,19 +11,19 @@ Aplikasi katalog belanja yang dibangun pakai **Next.js 16** (App Router), **Redu
 
 ## Technologies Used
 
-Berikut teknologi yang dipakai di project ini beserta alasan kenapa dipilih:
+Berikut daftar teknologi yang digunakan beserta alasan pemilihannya:
 
-| Teknologi | Kenapa Dipakai |
+| Teknologi | Alasan Penggunaan |
 |---|---|
-| **Next.js 16** (App Router) | Framework utama. Pakai App Router karena butuh Server Components buat rendering awal yang cepat, plus file-based routing yang bikin struktur halaman rapi tanpa harus setup router manual. |
-| **TypeScript** | Supaya kalau ada typo di props atau salah passing data, ketahuan langsung di editor sebelum sempat jadi bug di production. |
-| **Tailwind CSS v4** | Styling langsung di JSX, gak perlu bolak-balik file CSS terpisah. v4 dipilih karena sudah pakai CSS-first config, jadi lebih clean. |
-| **Redux Toolkit** | State management buat cart. Dipilih karena `createSlice` bikin boilerplate Redux jadi jauh lebih sedikit, dan built-in Immer jadi bisa mutate state langsung tanpa spread operator bertingkat. |
-| **redux-persist** | Supaya isi cart gak hilang pas user refresh halaman. Data cart disimpan ke `localStorage` dan otomatis di-restore saat aplikasi dibuka lagi. |
-| **TanStack Query v5** | Fetching data produk dari API. Fitur caching dan `staleTime` bikin halaman gak perlu fetch ulang tiap navigasi, dan loading state-nya sudah di-handle otomatis. |
-| **Framer Motion** | Animasi transisi halaman dan micro-interaction. Dipilih karena API-nya deklaratif — tinggal kasih prop `animate`, gak perlu nulis CSS keyframe manual. |
-| **react-hot-toast** | Notifikasi "Added to cart!" yang muncul di pojok kanan bawah. Ringan dan gampang dikustomisasi style-nya. |
-| **react-icons** | Library icon (Feather Icons). Biar gak perlu download SVG satu-satu atau pasang icon font yang berat. |
+| **Next.js 16** (App Router) | Framework utama. App Router dipilih karena mendukung React Server Components untuk rendering awal yang lebih cepat, serta menyediakan file-based routing yang membuat struktur halaman lebih terorganisir tanpa konfigurasi router tambahan. |
+| **TypeScript** | Menjamin type safety di seluruh codebase. Kesalahan seperti typo pada props atau ketidaksesuaian tipe data dapat terdeteksi langsung di editor, sebelum masuk ke tahap production. |
+| **Tailwind CSS v4** | Utility-first CSS framework yang memungkinkan styling langsung di dalam JSX tanpa perlu mengelola file CSS terpisah. Versi 4 dipilih karena sudah menggunakan CSS-first configuration yang lebih streamlined. |
+| **Redux Toolkit** | State management untuk cart. `createSlice` secara signifikan mengurangi boilerplate dibanding Redux konvensional, dan Immer yang sudah built-in memungkinkan penulisan state mutation secara langsung tanpa nested spread operator. |
+| **redux-persist** | Menyimpan state cart ke `localStorage` agar data tidak hilang saat halaman di-refresh. State secara otomatis di-restore ketika aplikasi dibuka kembali. |
+| **TanStack Query v5** | Menangani data fetching dari API dengan fitur caching dan `staleTime`, sehingga tidak perlu melakukan fetch ulang setiap kali user berpindah halaman. Loading dan error state juga sudah ter-handle secara otomatis. |
+| **Framer Motion** | Library animasi dengan API deklaratif untuk page transition dan micro-interaction. Cukup mendefinisikan prop `animate` tanpa perlu menulis CSS keyframe secara manual. |
+| **react-hot-toast** | Komponen toast notification yang ringan dan mudah dikustomisasi, digunakan untuk feedback saat produk ditambahkan ke cart. |
+| **react-icons** | Library icon (Feather Icons set) yang menghilangkan kebutuhan untuk mengelola file SVG secara individual atau memuat icon font yang berat. |
 
 ---
 
@@ -31,10 +31,10 @@ Berikut teknologi yang dipakai di project ini beserta alasan kenapa dipilih:
 
 ### Prasyarat
 
-- **Node.js** versi 18.17 ke atas
-- **npm** versi 9 ke atas
+- **Node.js** versi 18.17 atau lebih baru
+- **npm** versi 9 atau lebih baru
 
-Kalau belum punya Node.js, download dari [nodejs.org](https://nodejs.org/). npm sudah otomatis ikut ter-install.
+Jika belum ter-install, Node.js dapat diunduh dari [nodejs.org](https://nodejs.org/). npm akan otomatis ter-install bersama Node.js.
 
 ### Setup Project
 
@@ -51,7 +51,7 @@ Kalau belum punya Node.js, download dari [nodejs.org](https://nodejs.org/). npm 
    npm install
    ```
 
-   Proses ini akan menginstall semua package yang tercantum di `package.json`, termasuk Next.js, Redux Toolkit, TanStack Query, Tailwind CSS, Framer Motion, dan lainnya. Tunggu sampai selesai — biasanya beberapa menit tergantung koneksi internet.
+   Perintah ini akan menginstall seluruh package yang tercantum di `package.json` — termasuk Next.js, Redux Toolkit, TanStack Query, Tailwind CSS, Framer Motion, dan dependency lainnya. Proses ini memerlukan waktu beberapa menit tergantung kecepatan koneksi internet.
 
 3. **Jalankan development server**
 
@@ -59,18 +59,18 @@ Kalau belum punya Node.js, download dari [nodejs.org](https://nodejs.org/). npm 
    npm run dev
    ```
 
-   Buka [http://localhost:3000](http://localhost:3000) di browser. Setiap kali kamu edit dan save file, halaman akan otomatis ter-update (hot reload).
+   Akses [http://localhost:3000](http://localhost:3000) di browser. Setiap perubahan pada file source code akan langsung ter-reflect di browser melalui hot reload.
 
 ### Build untuk Production
 
-Kalau mau deploy atau test versi production-nya:
+Untuk membuat production build:
 
 ```bash
 npm run build
 npm start
 ```
 
-`npm run build` akan membuat optimized build (minified, tree-shaken, dll). `npm start` menjalankan server production di port 3000.
+`npm run build` menghasilkan optimized bundle (minified, tree-shaken). `npm start` menjalankan production server di port 3000.
 
 ---
 
@@ -78,8 +78,8 @@ npm start
 
 ```
 src/
-├── app/                       # Next.js App Router — halaman-halaman
-│   ├── layout.tsx             # Root layout, tempat Providers dibungkus
+├── app/                       # Next.js App Router pages
+│   ├── layout.tsx             # Root layout — wrapping Providers
 │   ├── page.tsx               # Halaman utama (katalog produk)
 │   ├── cart/page.tsx          # Halaman cart full-page
 │   └── product/[id]/page.tsx  # Halaman detail produk (dynamic route)
@@ -90,9 +90,9 @@ src/
 │   ├── cart/                  # CartSidebar, CartItem, CartPage
 │   └── ui/                   # AddToCartButton, Rating, PageTransition
 ├── hooks/                     # Custom hooks (TanStack Query wrapper)
-├── lib/                       # Fungsi API dan utilitas (formatPrice, dll.)
+├── lib/                       # API functions dan utility helpers
 ├── store/                     # Redux store, cart slice, Providers
-└── types/                     # TypeScript interfaces (Product, CartItem, dll.)
+└── types/                     # TypeScript interfaces
 ```
 
 ---
@@ -101,37 +101,37 @@ src/
 
 **Core:**
 - Halaman katalog dengan product grid, loading skeleton, dan hover animation
-- Halaman detail produk dengan gambar, rating, dan deskripsi lengkap
-- Cart yang persistent — isi cart tetap ada meskipun browser di-refresh
-- Cart sidebar (slide-in drawer) dengan kontrol quantity dan ringkasan order
-- Halaman cart full-page dengan kalkulasi shipping dan tombol checkout
+- Halaman detail produk lengkap dengan gambar, rating, dan deskripsi
+- Persistent cart — data cart tetap tersimpan meskipun browser di-refresh
+- Cart sidebar (slide-in drawer) dengan quantity control dan order summary
+- Halaman cart full-page dengan kalkulasi shipping dan alur checkout
 
 **Bonus:**
-- Filter kategori produk dengan animated pill indicator
+- Filter produk berdasarkan kategori dengan animated pill indicator
 - Search bar dengan debounced filtering
-- Animasi transisi halaman pakai Framer Motion
+- Page transition menggunakan Framer Motion
 - Toast notification saat produk ditambahkan ke cart
-- Layout responsive (mobile-first)
+- Responsive layout (mobile-first approach)
 
 ---
 
 ## Handling Hydration Issues — Cart Persistence di Next.js
 
-Bagian ini menjelaskan masalah yang muncul saat mengimplementasikan persistent cart pakai `redux-persist` di Next.js, dan bagaimana cara mengatasinya.
+Bagian ini membahas tantangan teknis yang muncul saat mengimplementasikan persistent cart menggunakan `redux-persist` di Next.js, beserta pendekatan yang digunakan untuk mengatasinya.
 
-### Masalahnya Apa?
+### Akar Permasalahan
 
-Next.js pakai Server-Side Rendering (SSR). Artinya, HTML halaman pertama kali di-render di server sebelum dikirim ke browser. Masalahnya: **server gak punya akses ke `localStorage`**. Jadi pas server render, cart selalu dalam keadaan kosong (`items: []`).
+Next.js menggunakan Server-Side Rendering (SSR) — HTML dirender di server terlebih dahulu sebelum dikirim ke browser. Permasalahannya terletak pada fakta bahwa **server tidak memiliki akses ke `localStorage`**. Akibatnya, saat server melakukan render, state cart selalu dalam kondisi kosong (`items: []`).
 
-Tapi begitu JavaScript di browser jalan, `redux-persist` langsung baca `localStorage` dan me-restore data cart yang sebelumnya tersimpan — misalnya ada 3 item. Ini bikin HTML yang di-render server (cart kosong) **berbeda** dengan yang di-render client (cart ada isinya). React mendeteksi perbedaan ini dan melempar **hydration mismatch error**.
+Ketika JavaScript mulai berjalan di browser, `redux-persist` membaca `localStorage` dan me-restore data cart yang sebelumnya tersimpan — misalnya berisi 3 item. Kondisi ini menyebabkan HTML hasil render server (cart kosong) **tidak konsisten** dengan hasil render client (cart berisi 3 item). React mendeteksi inkonsistensi ini dan menghasilkan **hydration mismatch error**.
 
-Intinya: server bilang "cart kosong", client bilang "cart ada 3 item", React bingung.
+Sederhananya: output server dan output client tidak cocok, sehingga React tidak dapat melakukan hydration dengan benar.
 
-### Solusi yang Dipakai
+### Pendekatan Solusi
 
-#### 1. `PersistGate` — Tahan Render Sampai Data Siap
+#### 1. `PersistGate` — Menahan Render Hingga Rehydration Selesai
 
-Di file `Providers.tsx`, seluruh app dibungkus pakai `PersistGate` dari `redux-persist`:
+Pada file `Providers.tsx`, seluruh aplikasi dibungkus menggunakan `PersistGate` dari `redux-persist`:
 
 ```tsx
 // src/store/Providers.tsx
@@ -144,13 +144,13 @@ Di file `Providers.tsx`, seluruh app dibungkus pakai `PersistGate` dari `redux-p
 </Provider>
 ```
 
-`loading={null}` artinya: **jangan render children sama sekali** sampai `redux-persist` selesai membaca data dari `localStorage` dan mengisi Redux store. Ini mencegah situasi di mana UI muncul sebentar dengan cart kosong, lalu tiba-tiba berubah jadi ada isinya (flash of empty state).
+Prop `loading={null}` memastikan bahwa **children tidak dirender sama sekali** hingga `redux-persist` selesai membaca data dari `localStorage` dan mengisi Redux store. Pendekatan ini mencegah terjadinya *flash of empty state* — kondisi di mana UI sempat muncul dengan cart kosong, lalu tiba-tiba berubah saat data ter-restore.
 
-Kenapa `null` dan bukan loading spinner? Karena proses rehydrate dari `localStorage` itu sangat cepat (biasanya < 50ms), jadi memunculkan spinner justru bikin pengalaman lebih jelek — user lihat loading indicator yang muncul cuma sekilas.
+Alasan menggunakan `null` alih-alih loading spinner: proses rehydrate dari `localStorage` berlangsung sangat cepat (umumnya < 50ms). Menampilkan spinner untuk durasi sesingkat itu justru memberikan pengalaman yang kurang baik bagi user.
 
-#### 2. Pattern `mounted` — Render Setelah Hydration Selesai
+#### 2. Pattern `mounted` — Conditional Render Pasca-Hydration
 
-Untuk komponen yang menampilkan data dari Redux (contoh: badge jumlah item di Navbar), dipakai pattern `mounted`:
+Komponen yang menampilkan data dari Redux store — seperti badge jumlah item di Navbar — menggunakan pattern `mounted` untuk menghindari mismatch:
 
 ```tsx
 // src/components/layout/Navbar.tsx
@@ -159,7 +159,7 @@ const [mounted, setMounted] = useState(false);
 
 useEffect(() => setMounted(true), []);
 
-// Badge hanya muncul setelah komponen mount di client
+// Badge hanya dirender setelah komponen ter-mount di client
 {mounted && cartCount > 0 && (
   <span className="...badge-styles...">
     {cartCount > 99 ? '99+' : cartCount}
@@ -167,31 +167,31 @@ useEffect(() => setMounted(true), []);
 )}
 ```
 
-Logikanya begini:
-- Saat server render, `mounted` = `false`, jadi badge **tidak di-render**. Server menghasilkan HTML tanpa badge.
-- Saat client hydrate, React melihat HTML yang sama (tanpa badge) — **tidak ada mismatch**.
-- Setelah hydration selesai, `useEffect` jalan, `mounted` jadi `true`, dan badge muncul dengan jumlah cart yang benar dari `localStorage`.
+Mekanismenya:
+- **Server render:** `mounted` bernilai `false`, sehingga badge **tidak dirender**. Server menghasilkan HTML tanpa elemen badge.
+- **Client hydration:** React mencocokkan HTML dari server — keduanya sama-sama tanpa badge, sehingga **tidak terjadi mismatch**.
+- **Post-hydration:** `useEffect` dieksekusi, `mounted` berubah menjadi `true`, dan badge muncul dengan jumlah cart yang sesuai dari `localStorage`.
 
-Ini trik klasik di Next.js untuk komponen yang bergantung pada data client-only. Gak elegan, tapi efektif.
+Pattern ini merupakan pendekatan standar di Next.js untuk komponen yang bergantung pada data client-only.
 
-#### 3. Boundary `"use client"` yang Jelas
+#### 3. Boundary `"use client"` yang Eksplisit
 
-Semua komponen yang berinteraksi dengan Redux store ditandai `"use client"` di baris pertama file:
+Seluruh komponen yang berinteraksi dengan Redux store ditandai dengan directive `"use client"` di baris pertama file:
 
-- `Providers.tsx` — wrapper Redux + PersistGate
-- `AppShell.tsx` — mengatur state buka/tutup cart sidebar
+- `Providers.tsx` — wrapper Redux Provider dan PersistGate
+- `AppShell.tsx` — mengelola state buka/tutup cart sidebar
 - `Navbar.tsx` — membaca `cartCount` dari store
 - `CartSidebar.tsx` — membaca dan memodifikasi cart items
 - `CartPage.tsx` — halaman cart full-page
-- `AddToCartButton.tsx` — dispatch `addToCart` action
+- `AddToCartButton.tsx` — mendispatch action `addToCart`
 
-Dengan memisahkan boundary ini secara eksplisit, Next.js tahu mana komponen yang perlu dijalankan di client dan mana yang cukup di server. Komponen server (seperti `layout.tsx`) tidak menyentuh Redux sama sekali — dia cuma membungkus children dengan `<Providers>`.
+Pemisahan boundary ini memastikan Next.js dapat membedakan komponen mana yang perlu dieksekusi di client dan mana yang cukup dirender di server. Komponen server seperti `layout.tsx` tidak menyentuh Redux — tugasnya hanya membungkus children dengan `<Providers>`.
 
-#### 4. Menekan Warning Serializable Action
+#### 4. Mengabaikan Non-Serializable Action
 
-`redux-persist` secara internal mendispatch action seperti `FLUSH`, `REHYDRATE`, `PAUSE`, dll. Action-action ini membawa value yang non-serializable, dan Redux Toolkit secara default akan memunculkan warning di console.
+`redux-persist` secara internal mendispatch action seperti `FLUSH`, `REHYDRATE`, `PAUSE`, dan lainnya. Action-action ini membawa value non-serializable, yang menyebabkan Redux Toolkit mengeluarkan warning di console.
 
-Solusinya: konfigurasi middleware untuk mengabaikan action-action tersebut:
+Untuk mengatasi ini, middleware dikonfigurasi agar mengabaikan action tersebut:
 
 ```tsx
 // src/store/store.ts
@@ -208,35 +208,35 @@ export const store = configureStore({
 });
 ```
 
-Ini bukan "menyembunyikan masalah" — action-action ini memang by design non-serializable dari `redux-persist`, dan mengabaikannya di serializable check adalah praktek yang direkomendasikan di [dokumentasi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist).
+Ini bukan workaround — action-action tersebut memang *by design* non-serializable dari sisi `redux-persist`. Mengabaikannya pada serializable check merupakan pendekatan yang [direkomendasikan oleh dokumentasi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist).
 
 ### Ringkasan Flow
 
 ```
 Server Render
-  └─ Cart state = kosong (default initialState)
-  └─ Badge cart = tidak di-render (mounted = false)
+  └─ Cart state = kosong (initialState default)
+  └─ Badge cart = tidak dirender (mounted = false)
   └─ HTML dikirim ke browser
 
-Client Hydrate
-  └─ React cocokkan HTML — match, tidak ada error
-  └─ PersistGate menahan render sampai localStorage terbaca
-  └─ redux-persist restore cart data dari localStorage
-  └─ useEffect jalan → mounted = true
-  └─ Badge muncul dengan jumlah cart yang benar
+Client Hydration
+  └─ React mencocokkan HTML — konsisten, tidak ada error
+  └─ PersistGate menahan render hingga localStorage terbaca
+  └─ redux-persist me-restore cart data dari localStorage
+  └─ useEffect dieksekusi → mounted = true
+  └─ Badge muncul dengan jumlah cart yang akurat
 ```
 
 ---
 
 ## API Endpoints
 
-Data produk diambil dari [Fake Store API](https://fakestoreapi.com/):
+Data produk bersumber dari [Fake Store API](https://fakestoreapi.com/):
 
 | Endpoint | Fungsi |
 |---|---|
-| `GET /products` | Ambil semua produk |
-| `GET /products/{id}` | Ambil detail satu produk |
-| `GET /products/categories` | Ambil daftar kategori |
+| `GET /products` | Mengambil seluruh daftar produk |
+| `GET /products/{id}` | Mengambil detail satu produk berdasarkan ID |
+| `GET /products/categories` | Mengambil daftar kategori produk |
 
 ---
 
