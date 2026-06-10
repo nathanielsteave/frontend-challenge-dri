@@ -115,115 +115,60 @@ src/
 
 ---
 
-## Handling Hydration Issues — Cart Persistence di Next.js
+## Handling Hydration Issues - Cart Persistence di Next.js
 
-Bagian ini membahas tantangan teknis yang muncul saat mengimplementasikan persistent cart menggunakan `redux-persist` di Next.js, beserta pendekatan yang digunakan untuk mengatasinya.
+### Masalah
 
-### Akar Permasalahan
+Server tidak punya akses ke `localStorage`, sehingga saat Server Side Rendering (SSR), cart selalu kosong. Ketika client me-restore data cart dari `localStorage` via `redux-persist`, terjadi perbedaan antara HTML server dan client — React mendeteksi ini sebagai **hydration mismatch error**.
 
-Next.js menggunakan Server-Side Rendering (SSR) — HTML dirender di server terlebih dahulu sebelum dikirim ke browser. Permasalahannya terletak pada fakta bahwa **server tidak memiliki akses ke `localStorage`**. Akibatnya, saat server melakukan render, state cart selalu dalam kondisi kosong (`items: []`).
+### Solusi
 
-Ketika JavaScript mulai berjalan di browser, `redux-persist` membaca `localStorage` dan me-restore data cart yang sebelumnya tersimpan misalnya berisi 3 item. Kondisi ini menyebabkan HTML hasil render server (cart kosong) **tidak konsisten** dengan hasil render client (cart berisi 3 item). React mendeteksi inkonsistensi ini dan menghasilkan **hydration mismatch error**.
-
-Sederhananya: output server dan output client tidak cocok, sehingga React tidak dapat melakukan hydration dengan benar.
-
-### Pendekatan Solusi
-
-#### 1. `PersistGate` — Menahan Render Hingga Rehydration Selesai
-
-Pada file `Providers.tsx`, seluruh aplikasi dibungkus menggunakan `PersistGate` dari `redux-persist`:
+#### 1. `PersistGate` - Menahan Render Sampai Data Siap
 
 ```tsx
 // src/store/Providers.tsx
-<Provider store={store}>
-  <PersistGate loading={null} persistor={persistor}>
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  </PersistGate>
-</Provider>
+<PersistGate loading={null} persistor={persistor}>
+  {children}
+</PersistGate>
 ```
 
-Prop `loading={null}` memastikan bahwa **children tidak dirender sama sekali** hingga `redux-persist` selesai membaca data dari `localStorage` dan mengisi Redux store. Pendekatan ini mencegah terjadinya *flash of empty state* kondisi di mana UI sempat muncul dengan cart kosong, lalu tiba-tiba berubah saat data ter-restore.
+`loading={null}` menunda render children hingga `redux-persist` selesai membaca `localStorage`. Proses ini sangat cepat (< 50ms), sehingga `null` lebih tepat daripada loading spinner.
 
-Alasan menggunakan `null` alih-alih loading spinner: proses rehydrate dari `localStorage` berlangsung sangat cepat (umumnya < 50ms). Menampilkan spinner untuk durasi sesingkat itu justru memberikan pengalaman yang kurang baik bagi user.
-
-#### 2. Pattern `mounted` — Conditional Render Pasca-Hydration
-
-Komponen yang menampilkan data dari Redux store seperti badge jumlah item di Navbar menggunakan pattern `mounted` untuk menghindari mismatch:
+#### 2. Pattern `mounted` - Render Data Client-Only Setelah Hydration
 
 ```tsx
 // src/components/layout/Navbar.tsx
-const cartCount = useSelector(selectCartCount);
 const [mounted, setMounted] = useState(false);
-
 useEffect(() => setMounted(true), []);
 
-// Badge hanya dirender setelah komponen ter-mount di client
-{mounted && cartCount > 0 && (
-  <span className="...badge-styles...">
-    {cartCount > 99 ? '99+' : cartCount}
-  </span>
-)}
+{mounted && cartCount > 0 && <span>{cartCount}</span>}
 ```
 
-Mekanismenya:
-- **Server render:** `mounted` bernilai `false`, sehingga badge **tidak dirender**. Server menghasilkan HTML tanpa elemen badge.
-- **Client hydration:** React mencocokkan HTML dari server keduanya sama-sama tanpa badge, sehingga **tidak terjadi mismatch**.
-- **Post-hydration:** `useEffect` dieksekusi, `mounted` berubah menjadi `true`, dan badge muncul dengan jumlah cart yang sesuai dari `localStorage`.
-
-Pattern ini merupakan pendekatan standar di Next.js untuk komponen yang bergantung pada data client-only.
+Server dan client sama-sama merender tanpa badge → tidak ada mismatch. Setelah hydration selesai, `useEffect` mengubah `mounted` menjadi `true` dan badge muncul.
 
 #### 3. Boundary `"use client"` yang Eksplisit
 
-Seluruh komponen yang berinteraksi dengan Redux store ditandai dengan directive `"use client"` di baris pertama file:
-
-- `Providers.tsx` — wrapper Redux Provider dan PersistGate
-- `AppShell.tsx` — mengelola state buka/tutup cart sidebar
-- `Navbar.tsx` — membaca `cartCount` dari store
-- `CartSidebar.tsx` — membaca dan memodifikasi cart items
-- `CartPage.tsx` — halaman cart full-page
-- `AddToCartButton.tsx` — mendispatch action `addToCart`
-
-Pemisahan boundary ini memastikan Next.js dapat membedakan komponen mana yang perlu dieksekusi di client dan mana yang cukup dirender di server. Komponen server seperti `layout.tsx` tidak menyentuh Redux — tugasnya hanya membungkus children dengan `<Providers>`.
+Semua komponen yang mengakses Redux store (`Providers`, `Navbar`, `CartSidebar`, `CartPage`, `AddToCartButton`, dll.) ditandai `"use client"`. Komponen server seperti `layout.tsx` hanya membungkus children dengan `<Providers>` tanpa menyentuh store.
 
 #### 4. Mengabaikan Non-Serializable Action
 
-`redux-persist` secara internal mendispatch action seperti `FLUSH`, `REHYDRATE`, `PAUSE`, dan lainnya. Action-action ini membawa value non-serializable, yang menyebabkan Redux Toolkit mengeluarkan warning di console.
-
-Untuk mengatasi ini, middleware dikonfigurasi agar mengabaikan action tersebut:
+`redux-persist` mendispatch action internal (`FLUSH`, `REHYDRATE`, dll.) yang non-serializable. Ini ditangani dengan mengecualikannya dari serializable check sesuai [rekomendasi resmi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist):
 
 ```tsx
 // src/store/store.ts
-export const store = configureStore({
-  reducer: {
-    cart: persistedCartReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-});
+middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
 ```
-
-Ini bukan workaround action-action tersebut memang *by design* non-serializable dari sisi `redux-persist`. Mengabaikannya pada serializable check merupakan pendekatan yang [direkomendasikan oleh dokumentasi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist).
 
 ### Ringkasan Flow
 
 ```
-Server Render
-  └─ Cart state = kosong (initialState default)
-  └─ Badge cart = tidak dirender (mounted = false)
-  └─ HTML dikirim ke browser
-
-Client Hydration
-  └─ React mencocokkan HTML — konsisten, tidak ada error
-  └─ PersistGate menahan render hingga localStorage terbaca
-  └─ redux-persist me-restore cart data dari localStorage
-  └─ useEffect dieksekusi → mounted = true
-  └─ Badge muncul dengan jumlah cart yang akurat
+Server  → Cart kosong, badge tidak dirender → kirim HTML ke browser
+Client  → Hydration cocok (tanpa mismatch) → PersistGate restore localStorage → mounted = true → badge muncul
 ```
 
 ---
