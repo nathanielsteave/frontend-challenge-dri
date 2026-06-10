@@ -1,4 +1,4 @@
-# TrendyMarket – Shopping Catalog App
+# Tjermin – Shopping Catalog App
 
 Aplikasi katalog belanja yang dibangun pakai **Next.js 16** (App Router), **Redux Toolkit**, **TanStack Query**, dan **Tailwind CSS v4**. Data produk diambil dari [Fake Store API](https://fakestoreapi.com/). Fitur utamanya: persistent cart, animasi micro-interaction, dan layout responsive.
 
