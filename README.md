@@ -119,7 +119,7 @@ src/
 
 ### Masalah
 
-Server tidak punya akses ke `localStorage`, sehingga saat Server Side Rendering (SSR), cart selalu kosong. Ketika client me-restore data cart dari `localStorage` via `redux-persist`, terjadi perbedaan antara HTML server dan client — React mendeteksi ini sebagai **hydration mismatch error**.
+Server tidak punya akses ke `localStorage`, sehingga saat Server Side Rendering (SSR), cart selalu kosong. Ketika client me-restore data cart dari `localStorage` via `redux-persist`, terjadi perbedaan antara HTML server dan client React mendeteksi ini sebagai **hydration mismatch error**.
 
 ### Solusi
 
