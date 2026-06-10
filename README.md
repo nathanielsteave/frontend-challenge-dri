@@ -41,7 +41,7 @@ Jika belum ter-install, Node.js dapat diunduh dari [nodejs.org](https://nodejs.o
 1. **Clone repository**
 
    ```bash
-   git clone https://github.com/your-username/frontend-challenge-dri.git
+   git clone https://github.com/nathanielsteave/frontend-challenge-dri.git
    cd frontend-challenge-dri
    ```
 
@@ -88,7 +88,7 @@ src/
 │   ├── catalog/               # ProductGrid, ProductCard, CategoryFilter, SearchBar, Skeleton
 │   ├── product/               # ProductDetail
 │   ├── cart/                  # CartSidebar, CartItem, CartPage
-│   └── ui/                   # AddToCartButton, Rating, PageTransition
+│   └── ui/                    # AddToCartButton, Rating, PageTransition
 ├── hooks/                     # Custom hooks (TanStack Query wrapper)
 ├── lib/                       # API functions dan utility helpers
 ├── store/                     # Redux store, cart slice, Providers
