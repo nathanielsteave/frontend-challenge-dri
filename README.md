@@ -123,7 +123,7 @@ Bagian ini membahas tantangan teknis yang muncul saat mengimplementasikan persis
 
 Next.js menggunakan Server-Side Rendering (SSR) — HTML dirender di server terlebih dahulu sebelum dikirim ke browser. Permasalahannya terletak pada fakta bahwa **server tidak memiliki akses ke `localStorage`**. Akibatnya, saat server melakukan render, state cart selalu dalam kondisi kosong (`items: []`).
 
-Ketika JavaScript mulai berjalan di browser, `redux-persist` membaca `localStorage` dan me-restore data cart yang sebelumnya tersimpan — misalnya berisi 3 item. Kondisi ini menyebabkan HTML hasil render server (cart kosong) **tidak konsisten** dengan hasil render client (cart berisi 3 item). React mendeteksi inkonsistensi ini dan menghasilkan **hydration mismatch error**.
+Ketika JavaScript mulai berjalan di browser, `redux-persist` membaca `localStorage` dan me-restore data cart yang sebelumnya tersimpan misalnya berisi 3 item. Kondisi ini menyebabkan HTML hasil render server (cart kosong) **tidak konsisten** dengan hasil render client (cart berisi 3 item). React mendeteksi inkonsistensi ini dan menghasilkan **hydration mismatch error**.
 
 Sederhananya: output server dan output client tidak cocok, sehingga React tidak dapat melakukan hydration dengan benar.
 
@@ -144,13 +144,13 @@ Pada file `Providers.tsx`, seluruh aplikasi dibungkus menggunakan `PersistGate` 
 </Provider>
 ```
 
-Prop `loading={null}` memastikan bahwa **children tidak dirender sama sekali** hingga `redux-persist` selesai membaca data dari `localStorage` dan mengisi Redux store. Pendekatan ini mencegah terjadinya *flash of empty state* — kondisi di mana UI sempat muncul dengan cart kosong, lalu tiba-tiba berubah saat data ter-restore.
+Prop `loading={null}` memastikan bahwa **children tidak dirender sama sekali** hingga `redux-persist` selesai membaca data dari `localStorage` dan mengisi Redux store. Pendekatan ini mencegah terjadinya *flash of empty state* kondisi di mana UI sempat muncul dengan cart kosong, lalu tiba-tiba berubah saat data ter-restore.
 
 Alasan menggunakan `null` alih-alih loading spinner: proses rehydrate dari `localStorage` berlangsung sangat cepat (umumnya < 50ms). Menampilkan spinner untuk durasi sesingkat itu justru memberikan pengalaman yang kurang baik bagi user.
 
 #### 2. Pattern `mounted` — Conditional Render Pasca-Hydration
 
-Komponen yang menampilkan data dari Redux store — seperti badge jumlah item di Navbar — menggunakan pattern `mounted` untuk menghindari mismatch:
+Komponen yang menampilkan data dari Redux store seperti badge jumlah item di Navbar menggunakan pattern `mounted` untuk menghindari mismatch:
 
 ```tsx
 // src/components/layout/Navbar.tsx
@@ -169,7 +169,7 @@ useEffect(() => setMounted(true), []);
 
 Mekanismenya:
 - **Server render:** `mounted` bernilai `false`, sehingga badge **tidak dirender**. Server menghasilkan HTML tanpa elemen badge.
-- **Client hydration:** React mencocokkan HTML dari server — keduanya sama-sama tanpa badge, sehingga **tidak terjadi mismatch**.
+- **Client hydration:** React mencocokkan HTML dari server keduanya sama-sama tanpa badge, sehingga **tidak terjadi mismatch**.
 - **Post-hydration:** `useEffect` dieksekusi, `mounted` berubah menjadi `true`, dan badge muncul dengan jumlah cart yang sesuai dari `localStorage`.
 
 Pattern ini merupakan pendekatan standar di Next.js untuk komponen yang bergantung pada data client-only.
@@ -208,7 +208,7 @@ export const store = configureStore({
 });
 ```
 
-Ini bukan workaround — action-action tersebut memang *by design* non-serializable dari sisi `redux-persist`. Mengabaikannya pada serializable check merupakan pendekatan yang [direkomendasikan oleh dokumentasi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist).
+Ini bukan workaround action-action tersebut memang *by design* non-serializable dari sisi `redux-persist`. Mengabaikannya pada serializable check merupakan pendekatan yang [direkomendasikan oleh dokumentasi Redux Toolkit](https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist).
 
 ### Ringkasan Flow
 
